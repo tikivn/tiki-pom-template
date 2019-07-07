@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>vn.tiki</groupId>
 	<artifactId>tiki-pom-template</artifactId>
-	<version>0.0.3</version>
+	<version>0.0.4</version>
 	<packaging>pom</packaging>
 
 	<parent>
@@ -18,7 +18,10 @@
 		<delombok.output>${project.build.directory}/delombok</delombok.output>
 
 		<lombok.version>1.18.8</lombok.version>
+
 		<junit.version>4.12</junit.version>
+		<powermock.version>2.0.2</powermock.version>
+		<mockito.core.version>2.28.2</mockito.core.version>
 
 		<log4j2.version>2.11.1</log4j2.version>
 	</properties>
@@ -193,6 +196,24 @@
 				<version>${log4j2.version}</version>
 				<scope>test</scope>
 			</dependency>
+			<dependency>
+				<groupId>org.mockito</groupId>
+				<artifactId>mockito-core</artifactId>
+				<version>${mockito.core.version}</version>
+				<scope>test</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.powermock</groupId>
+				<artifactId>powermock-module-junit4</artifactId>
+				<version>${powermock.version}</version>
+				<scope>test</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.powermock</groupId>
+				<artifactId>powermock-api-mockito2</artifactId>
+				<version>${powermock.version}</version>
+				<scope>test</scope>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 
@@ -202,10 +223,24 @@
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
 		</dependency>
+
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-core</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.powermock</groupId>
+			<artifactId>powermock-module-junit4</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.powermock</groupId>
+			<artifactId>powermock-api-mockito2</artifactId>
+		</dependency>
+
 		<dependency>
 			<groupId>org.apache.logging.log4j</groupId>
 			<artifactId>log4j-api</artifactId>
