@@ -26,6 +26,7 @@
 		<mockito.core.version>2.28.2</mockito.core.version>
 
 		<log4j2.version>2.11.1</log4j2.version>
+		<project.dist>dist/${project.artifactId}</project.dist>
 	</properties>
 
 	<distributionManagement>
@@ -57,20 +58,6 @@
 		</testResources>
 		<pluginManagement>
 			<plugins>
-				<plugin>
-					<artifactId>maven-assembly-plugin</artifactId>
-					<configuration>
-						<archive>
-							<manifest>
-								<mainClass>${mainClass}</mainClass>
-							</manifest>
-						</archive>
-						<descriptorRefs>
-							<descriptorRef>jar-with-dependencies</descriptorRef>
-						</descriptorRefs>
-					</configuration>
-				</plugin>
-				
 				<plugin>
 					<groupId>org.eclipse.m2e</groupId>
 					<artifactId>lifecycle-mapping</artifactId>
@@ -107,6 +94,135 @@
 							</pluginExecutions>
 						</lifecycleMappingMetadata>
 					</configuration>
+				</plugin>
+
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-dependency-plugin</artifactId>
+					<version>2.8</version>
+					<executions>
+						<execution>
+							<id>copy-dependencies</id>
+							<phase>package</phase>
+							<goals>
+								<goal>copy-dependencies</goal>
+							</goals>
+							<configuration>
+								<outputDirectory>${project.dist}/lib</outputDirectory>
+								<overWriteReleases>true</overWriteReleases>
+								<overWriteSnapshots>false</overWriteSnapshots>
+								<overWriteIfNewer>true</overWriteIfNewer>
+								<excludeScope>provided</excludeScope>
+							</configuration>
+						</execution>
+					</executions>
+				</plugin>
+
+				<plugin>
+					<artifactId>maven-antrun-plugin</artifactId>
+					<version>1.8</version>
+					<executions>
+						<execution>
+							<phase>package</phase>
+							<configuration>
+								<target>
+									<delete failonerror="false">
+										<fileset dir="${project.dist}" />
+									</delete>
+									<copy todir="${project.dist}/lib">
+										<fileset dir="${project.build.directory}">
+											<exclude name="*-sources.jar" />
+											<exclude name="*-javadoc.jar" />
+											<include name="*.jar" />
+										</fileset>
+									</copy>
+									<copy todir="${project.dist}/config">
+										<fileset dir="${project.basedir}/config" />
+									</copy>
+
+									<echo file="${project.dist}/version.txt" append="false">${project.version}</echo>
+									<echo file="${project.dist}/${project.artifactId}.vmoptions"><![CDATA[
+--add-modules java.se 
+--add-exports java.base/jdk.internal.ref=ALL-UNNAMED 
+--add-opens java.base/java.lang=ALL-UNNAMED 
+--add-opens java.base/java.nio=ALL-UNNAMED 
+--add-opens java.base/sun.nio.ch=ALL-UNNAMED 
+--add-opens java.management/sun.management=ALL-UNNAMED 
+--add-opens jdk.management/com.sun.management.internal=ALL-UNNAMED
+
+-server
+-Xms512M
+-Xmx512M
+
+# print full stacktrace
+# -XX:-OmitStackTraceInFastThrow
+
+-Dfile.encoding=UTF-8
+
+-XX:+HeapDumpOnOutOfMemoryError
+-XX:HeapDumpPath="logs/heap-dump.hprof"
+
+# log4j config
+-DLog4jContextSelector=org.apache.logging.log4j.core.async.AsyncLoggerContextSelector
+-DAsyncLoggerConfig.RingBufferSize=1024*1024
+
+# uncomment following lines to enable jmx remote 
+#-Dcom.sun.management.jmxremote
+#-Dcom.sun.management.jmxremote.port=9001
+#-Dcom.sun.management.jmxremote.local.only=false
+#-Dcom.sun.management.jmxremote.authenticate=false
+#-Dcom.sun.management.jmxremote.ssl=false
+
+# uncomment following line to enable remote debug
+# -agentlib:jdwp=transport=dt_socket,server=y,address=8000,suspend=n
+
+# ******* REMEMBER TO KEEP THE LAST EMPTY LINE *******
+
+									]]></echo>
+									<echo file="${project.dist}/start.sh"><![CDATA[#!/bin/bash
+SELF_ABSOLUTE_PATH="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/$(basename "${BASH_SOURCE[0]}")"
+WORKING_DIR=$(dirname $SELF_ABSOLUTE_PATH)
+
+read_vmoptions() {
+  vmoptions_file=`eval echo "$1" 2>/dev/null`
+  if [ ! -r "$vmoptions_file" ]; then
+    vmoptions_file="$prg_dir/$vmoptions_file"
+  fi
+  if [ -r "$vmoptions_file" ] && [ -f "$vmoptions_file" ]; then
+    exec 8< "$vmoptions_file"
+    while read cur_option<&8; do
+      is_comment=`expr "W$cur_option" : 'W *#.*'`
+      if [ "$is_comment" = "0" ]; then 
+      	echo $cur_option
+        vmo_include=`expr "W$cur_option" : 'W *-include-options \(.*\)'`
+        if [ "$vmo_include" = "" ]; then
+          JVM_OPTS="$JVM_OPTS $cur_option"
+        fi
+      fi
+    done
+    exec 8<&-
+    if [ ! "$vmo_include" = "" ]; then
+      read_vmoptions "$vmo_include"
+    fi
+  fi
+}
+
+JVM_OPTS=""
+read_vmoptions $WORKING_DIR/${project.artifactId}.vmoptions
+
+MAIN_CLASS=${mainClass}
+LOCAL_CLASSPATH="./*:./lib/*"
+
+java $JVM_OPTS -cp "$LOCAL_CLASSPATH" -Dworking.dir=$WORKING_DIR $MAIN_CLASS $@]]></echo>
+									<copy file="${project.dist}/start.sh" tofile="${project.dist}/start-background.sh" />
+									<echo append="true" file="${project.dist}/start-background.sh"><![CDATA[> /dev/null 2>&1 &]]></echo>
+								</target>
+							</configuration>
+							<goals>
+								<goal>run</goal>
+							</goals>
+						</execution>
+					</executions>
 				</plugin>
 			</plugins>
 		</pluginManagement>
