@@ -182,7 +182,7 @@
 # ******* REMEMBER TO KEEP THE LAST EMPTY LINE *******
 
 									]]></echo>
-									<echo file="${project.dist}/start.sh"><![CDATA[#!/bin/bash
+									<echo file="${project.dist}/start-${project.artifactId}.sh"><![CDATA[#!/bin/bash
 SELF_ABSOLUTE_PATH="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/$(basename "${BASH_SOURCE[0]}")"
 WORKING_DIR=$(dirname $SELF_ABSOLUTE_PATH)
 
@@ -217,8 +217,8 @@ MAIN_CLASS=${mainClass}
 LOCAL_CLASSPATH="./*:./lib/*"
 
 java $JVM_OPTS -cp "$LOCAL_CLASSPATH" -Dworking.dir=$WORKING_DIR $MAIN_CLASS $@]]></echo>
-									<copy file="${project.dist}/start.sh" tofile="${project.dist}/start-background.sh" />
-									<echo append="true" file="${project.dist}/start-background.sh"><![CDATA[> /dev/null 2>&1 &]]></echo>
+									<copy file="${project.dist}/start-${project.artifactId}.sh" tofile="${project.dist}/start-${project.artifactId}-background.sh" />
+									<echo append="true" file="${project.dist}/start-${project.artifactId}-background.sh"><![CDATA[> /dev/null 2>&1 &]]></echo>
 								</target>
 							</configuration>
 							<goals>
