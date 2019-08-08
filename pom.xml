@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>vn.tiki</groupId>
 	<artifactId>tiki-pom-template</artifactId>
-	<version>0.0.8</version>
+	<version>0.0.9</version>
 	<packaging>pom</packaging>
 
 	<parent>
@@ -38,6 +38,8 @@
 		<sonar.jacoco.reportPath>${project.basedir}/../target/jacoco.exec</sonar.jacoco.reportPath>
 		<sonar.jacoco.outputDirectory>${project.reporting.outputEncoding}</sonar.jacoco.outputDirectory>
 		<sonar.language>java</sonar.language>
+
+		<release.vmoptions.more></release.vmoptions.more>
 	</properties>
 
 	<distributionManagement>
@@ -186,35 +188,34 @@
 --add-opens java.base/sun.nio.ch=ALL-UNNAMED 
 --add-opens java.management/sun.management=ALL-UNNAMED 
 --add-opens jdk.management/com.sun.management.internal=ALL-UNNAMED
-
+#
+-Dfile.encoding=UTF-8
 -server
 -Xms${release.vmoptions.xms}
 -Xmx${release.vmoptions.xmx}
-
+#
 # print full stacktrace
 # -XX:-OmitStackTraceInFastThrow
-
--Dfile.encoding=UTF-8
-
+#
 -XX:+HeapDumpOnOutOfMemoryError
 -XX:HeapDumpPath="logs/heap-dump.hprof"
-
+#
 # log4j config
 -DLog4jContextSelector=org.apache.logging.log4j.core.async.AsyncLoggerContextSelector
 -DAsyncLoggerConfig.RingBufferSize=1024*1024
-
+#
 # uncomment following lines to enable jmx remote 
 #-Dcom.sun.management.jmxremote
 #-Dcom.sun.management.jmxremote.port=9001
 #-Dcom.sun.management.jmxremote.local.only=false
 #-Dcom.sun.management.jmxremote.authenticate=false
 #-Dcom.sun.management.jmxremote.ssl=false
-
+#
 # uncomment following line to enable remote debug
 # -agentlib:jdwp=transport=dt_socket,server=y,address=8000,suspend=n
-
-# ******* REMEMBER TO KEEP THE LAST EMPTY LINE *******
-
+#
+${release.vmoptions.more}
+#
 									]]></echo>
 									<echo file="${project.dist}/start-${project.artifactId}.sh"><![CDATA[#!/bin/bash
 SELF_ABSOLUTE_PATH="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/$(basename "${BASH_SOURCE[0]}")"
@@ -408,24 +409,10 @@ java $JVM_OPTS -cp "$LOCAL_CLASSPATH" -Dworking.dir=$WORKING_DIR $MAIN_CLASS $@]
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
 		</dependency>
-
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 		</dependency>
-		<dependency>
-			<groupId>org.mockito</groupId>
-			<artifactId>mockito-core</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.powermock</groupId>
-			<artifactId>powermock-module-junit4</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.powermock</groupId>
-			<artifactId>powermock-api-mockito2</artifactId>
-		</dependency>
-
 		<dependency>
 			<groupId>org.apache.logging.log4j</groupId>
 			<artifactId>log4j-api</artifactId>
