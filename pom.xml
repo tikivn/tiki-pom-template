@@ -176,7 +176,7 @@
 											<include name="*.jar" />
 										</fileset>
 									</copy>
-									<copy todir="${project.dist}/config">
+									<copy todir="${project.dist}/config" failonerror="false">
 										<fileset dir="${project.basedir}/config" />
 									</copy>
 
