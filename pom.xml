@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>vn.tiki</groupId>
 	<artifactId>tiki-pom-template</artifactId>
-	<version>0.0.9</version>
+	<version>1.0.0</version>
 	<packaging>pom</packaging>
 
 	<parent>
@@ -40,6 +40,7 @@
 		<sonar.language>java</sonar.language>
 
 		<release.vmoptions.more></release.vmoptions.more>
+		<release.sbin.start.name>start-${project.artifactId}</release.sbin.start.name>
 	</properties>
 
 	<distributionManagement>
@@ -217,7 +218,7 @@
 ${release.vmoptions.more}
 #
 									]]></echo>
-									<echo file="${project.dist}/start-${project.artifactId}.sh"><![CDATA[#!/bin/bash
+									<echo file="${project.dist}/${release.sbin.start.name}.sh"><![CDATA[#!/bin/bash
 SELF_ABSOLUTE_PATH="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/$(basename "${BASH_SOURCE[0]}")"
 WORKING_DIR=$(dirname $SELF_ABSOLUTE_PATH)
 
@@ -252,8 +253,8 @@ MAIN_CLASS=${mainClass}
 LOCAL_CLASSPATH="./*:./lib/*"
 
 java $JVM_OPTS -cp "$LOCAL_CLASSPATH" -Dworking.dir=$WORKING_DIR $MAIN_CLASS $@]]></echo>
-									<copy file="${project.dist}/start-${project.artifactId}.sh" tofile="${project.dist}/start-${project.artifactId}-background.sh" />
-									<echo append="true" file="${project.dist}/start-${project.artifactId}-background.sh"><![CDATA[> /dev/null 2>&1 &]]></echo>
+									<copy file="${project.dist}/${release.sbin.start.name}.sh" tofile="${project.dist}/${release.sbin.start.name}-background.sh" />
+									<echo append="true" file="${project.dist}/${release.sbin.start.name}-background.sh"><![CDATA[> /dev/null 2>&1 &]]></echo>
 								</target>
 							</configuration>
 							<goals>
