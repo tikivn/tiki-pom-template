@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>vn.tiki</groupId>
 	<artifactId>tiki-pom-template</artifactId>
-	<version>1.0.0</version>
+	<version>1.0.1</version>
 	<packaging>pom</packaging>
 
 	<parent>
@@ -427,4 +427,44 @@ java $JVM_OPTS -cp "$LOCAL_CLASSPATH" -Dworking.dir=$WORKING_DIR $MAIN_CLASS $@]
 			<artifactId>log4j-slf4j-impl</artifactId>
 		</dependency>
 	</dependencies>
+
+
+	<repositories>
+		<repository>
+			<id>archiva.snapshots</id>
+			<name>Archiva Snapshots</name>
+			<releases>
+				<enabled>false</enabled>
+			</releases>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+			<url>http://archiva.dev.tiki.services/repository/snapshots</url>
+		</repository>
+
+		<repository>
+			<id>archiva.internal</id>
+			<name>Archiva Releases</name>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+			<url>http://archiva.dev.tiki.services/repository/internal</url>
+		</repository>
+
+		<repository>
+			<id>sonatype.snapshots</id>
+			<name>Sonatype Snapshots</name>
+			<releases>
+				<enabled>false</enabled>
+			</releases>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
+		</repository>
+	</repositories>
+
 </project>
