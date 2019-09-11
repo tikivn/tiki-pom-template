@@ -427,4 +427,7 @@ java $JVM_OPTS -cp "$LOCAL_CLASSPATH" -Dworking.dir=$WORKING_DIR $MAIN_CLASS $@]
 			<artifactId>log4j-slf4j-impl</artifactId>
 		</dependency>
 	</dependencies>
+	<modules>
+		<module>with-log4j-tiki-pom-template</module>
+	</modules>
 </project>
