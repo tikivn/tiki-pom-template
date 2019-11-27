@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>vn.tiki</groupId>
 	<artifactId>tiki-pom-template</artifactId>
-	<version>1.1.1</version>
+	<version>1.1.2</version>
 	<packaging>pom</packaging>
 
 	<parent>
@@ -21,15 +21,12 @@
 
 		<lombok.version>1.18.10</lombok.version>
 
+		<log4j2.version>2.11.1</log4j2.version>
+		<log4j2.scope>test</log4j2.scope>
+
 		<junit.version>4.12</junit.version>
 		<powermock.version>2.0.2</powermock.version>
 		<mockito.core.version>2.28.2</mockito.core.version>
-
-		<log4j2.version>2.11.1</log4j2.version>
-
-		<project.dist>dist/${project.artifactId}</project.dist>
-		<release.vmoptions.xms>512M</release.vmoptions.xms>
-		<release.vmoptions.xmx>512M</release.vmoptions.xmx>
 
 		<!-- Sonar -->
 		<jacoco.maven.plugin.version>0.8.2</jacoco.maven.plugin.version>
@@ -39,8 +36,12 @@
 		<sonar.jacoco.outputDirectory>${project.reporting.outputEncoding}</sonar.jacoco.outputDirectory>
 		<sonar.language>java</sonar.language>
 
-		<release.vmoptions.more></release.vmoptions.more>
+		<project.dist>dist/${project.artifactId}</project.dist>
+
 		<release.sbin.start.name>start-${project.artifactId}</release.sbin.start.name>
+		<release.vmoptions.xms>512M</release.vmoptions.xms>
+		<release.vmoptions.xmx>512M</release.vmoptions.xmx>
+		<release.vmoptions.more></release.vmoptions.more>
 	</properties>
 
 	<distributionManagement>
@@ -195,26 +196,19 @@
 -Xms${release.vmoptions.xms}
 -Xmx${release.vmoptions.xmx}
 #
-# print full stacktrace
-# -XX:-OmitStackTraceInFastThrow
+# force to use G1GC
+-XX:+UseG1GC
+-XX:MaxGCPauseMillis=100
 #
+# heap dump
 -XX:+HeapDumpOnOutOfMemoryError
 -XX:HeapDumpPath="logs/heap-dump.hprof"
 #
-# log4j config
+# log4j config to use disruptor
 -DLog4jContextSelector=org.apache.logging.log4j.core.async.AsyncLoggerContextSelector
 -DAsyncLoggerConfig.RingBufferSize=1024*1024
 #
-# uncomment following lines to enable jmx remote 
-#-Dcom.sun.management.jmxremote
-#-Dcom.sun.management.jmxremote.port=9001
-#-Dcom.sun.management.jmxremote.local.only=false
-#-Dcom.sun.management.jmxremote.authenticate=false
-#-Dcom.sun.management.jmxremote.ssl=false
-#
-# uncomment following line to enable remote debug
-# -agentlib:jdwp=transport=dt_socket,server=y,address=8000,suspend=n
-#
+# additional options which configured from pom's properties gone here
 ${release.vmoptions.more}
 #
 									]]></echo>
@@ -360,27 +354,27 @@ java $JVM_OPTS -cp "$LOCAL_CLASSPATH" -Dworking.dir=$WORKING_DIR $MAIN_CLASS $@]
 				<scope>provided</scope>
 			</dependency>
 			<dependency>
-				<groupId>junit</groupId>
-				<artifactId>junit</artifactId>
-				<version>${junit.version}</version>
-				<scope>test</scope>
-			</dependency>
-			<dependency>
 				<groupId>org.apache.logging.log4j</groupId>
 				<artifactId>log4j-api</artifactId>
 				<version>${log4j2.version}</version>
-				<scope>test</scope>
+				<scope>${log4j2.scope}</scope>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.logging.log4j</groupId>
 				<artifactId>log4j-core</artifactId>
 				<version>${log4j2.version}</version>
-				<scope>test</scope>
+				<scope>${log4j2.scope}</scope>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.logging.log4j</groupId>
 				<artifactId>log4j-slf4j-impl</artifactId>
 				<version>${log4j2.version}</version>
+				<scope>${log4j2.scope}</scope>
+			</dependency>
+			<dependency>
+				<groupId>junit</groupId>
+				<artifactId>junit</artifactId>
+				<version>${junit.version}</version>
 				<scope>test</scope>
 			</dependency>
 			<dependency>
@@ -427,7 +421,4 @@ java $JVM_OPTS -cp "$LOCAL_CLASSPATH" -Dworking.dir=$WORKING_DIR $MAIN_CLASS $@]
 			<artifactId>log4j-slf4j-impl</artifactId>
 		</dependency>
 	</dependencies>
-	<modules>
-		<module>with-log4j-tiki-pom-template</module>
-	</modules>
 </project>
