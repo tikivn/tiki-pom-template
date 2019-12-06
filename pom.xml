@@ -425,12 +425,18 @@ java $JVM_OPTS -cp "$LOCAL_CLASSPATH" -Dworking.dir=$WORKING_DIR $MAIN_CLASS $@]
 	<profiles>
 		<profile>
 			<id>release</id>
+
 			<activation>
 				<property>
 					<name>release</name>
 					<value>true</value>
 				</property>
 			</activation>
+
+			<properties>
+				<log4j2.scope>runtime</log4j2.scope>
+			</properties>
+
 			<build>
 				<plugins>
 					<plugin>
