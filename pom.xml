@@ -46,14 +46,14 @@
 
 	<distributionManagement>
 		<repository>
-			<id>releases</id>
-			<name>Releases Repository</name>
-			<url>${RELEASES_URL}</url>
+			<id>tiki.archiva.releases</id>
+			<name>Tiki - Archiva Releases Repository</name>
+			<url>http://archiva.dev.tiki.services/repository/internal</url>
 		</repository>
 		<snapshotRepository>
-			<id>snapshots</id>
-			<name>Snapshots Repository</name>
-			<url>${SNAPSHOTS_URL}</url>
+			<id>tiki.archiva.snapshots</id>
+			<name>Tiki - Archiva Snapshots Repository</name>
+			<url>http://archiva.dev.tiki.services/repository/snapshots</url>
 		</snapshotRepository>
 	</distributionManagement>
 
