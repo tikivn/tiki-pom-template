@@ -227,7 +227,7 @@ read_vmoptions() {
     while read cur_option<&8; do
       is_comment=`expr "W$cur_option" : 'W *#.*'`
       if [ "$is_comment" = "0" ]; then 
-      	echo $cur_option
+      	echo $(eval echo $cur_option)
         vmo_include=`expr "W$cur_option" : 'W *-include-options \(.*\)'`
         if [ "$vmo_include" = "" ]; then
           JVM_OPTS="$JVM_OPTS $(eval echo $cur_option)"
