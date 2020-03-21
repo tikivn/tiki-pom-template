@@ -41,6 +41,7 @@
 		<release.sbin.start.name>start-${project.artifactId}</release.sbin.start.name>
 		<release.vmoptions.xms>512M</release.vmoptions.xms>
 		<release.vmoptions.xmx>512M</release.vmoptions.xmx>
+		<release.vmoptions.oom.heapdump.location>logs/heap-dump-$HOSTNAME.hprof</release.vmoptions.oom.heapdump.location>
 		<release.vmoptions.more></release.vmoptions.more>
 	</properties>
 
@@ -202,7 +203,7 @@
 #
 # heap dump
 -XX:+HeapDumpOnOutOfMemoryError
--XX:HeapDumpPath="logs/heap-dump-$HOSTNAME.hprof"
+-XX:HeapDumpPath=${release.vmoptions.oom.heapdump.location}
 #
 # log4j config to use disruptor
 -DLog4jContextSelector=org.apache.logging.log4j.core.async.AsyncLoggerContextSelector
